@@ -6,7 +6,7 @@ const WIDTH: u16 = 100;
 pub struct Game {
     pub dino_y: u16,
 
-    jumping: bool,
+    pub jumping: bool,
     jump_time: u16,
 
     pub obstacles: Vec<u16>,
@@ -19,7 +19,7 @@ impl Game {
     pub fn new() -> Self {
         Self {
             dino_y: 0,
-            jumping: true,
+            jumping: false,
             jump_time: 0,
             obstacles: vec![0; WIDTH as usize],
             score_cooldown: 0,
@@ -71,7 +71,7 @@ impl Game {
 
         if self.jump_time == JUMP_TIME {
             self.jump_time = 0;
-            self.jumping = true;
+            self.jumping = false;
         }
     }
 
