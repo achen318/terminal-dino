@@ -2,7 +2,7 @@ mod game;
 mod input;
 mod render;
 
-use crossterm::terminal::enable_raw_mode;
+use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use std::{thread, time::Duration};
 
 const TICK: Duration = Duration::from_millis(100);
@@ -17,4 +17,6 @@ fn main() {
         render::render(&game);
         thread::sleep(TICK);
     }
+
+    disable_raw_mode().unwrap();
 }
