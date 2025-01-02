@@ -1,7 +1,14 @@
 [package]
-name = "cli-dino"
+name = "terminal-dino"
+description = "A simple Dino game in the terminal"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+keywords = ["dino", "game"]
+categories = ["games"]
+homepage = "https://github.com/achen318/terminal-dino"
+repository = "https://github.com/achen318/terminal-dino"
+readme = "README.md"
 
 [dependencies]
 crossterm = "0.28.1"
