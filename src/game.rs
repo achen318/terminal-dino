@@ -4,7 +4,7 @@ const JUMP_TIME: u16 = 8;
 const WIDTH: u16 = 100;
 
 pub struct Game {
-    pub dino_y: u16,
+    pub dino_y: u16, // y position of the feet, 0 is ground level
 
     pub jumping: bool,
     jump_time: u16,
@@ -66,9 +66,9 @@ impl Game {
 
     fn jump(&mut self) {
         if self.jump_time >= JUMP_TIME / 2 {
-            self.dino_y -= 1;
+            self.dino_y -= 1; // descend
         } else {
-            self.dino_y += 1;
+            self.dino_y += 1; // ascend
         }
 
         self.jump_time += 1;
@@ -80,6 +80,6 @@ impl Game {
     }
 
     fn collision(&self) -> bool {
-        self.obstacles[2] > 0 && self.dino_y < self.obstacles[2]
+        self.dino_y < self.obstacles[2] // collision with feet
     }
 }
