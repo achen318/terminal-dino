@@ -16,7 +16,28 @@ const MAX_WIDTH: u16 = 100;
 
 pub fn render(game: &Game) {
     let mut stdout = io::stdout();
-    let (mut width, mut height) = size().unwrap();
+    let (width, height) = get_board_size();
+
+    stdout.execute(Clear(All)).unwrap();
+
+    draw_borders(&mut stdout, width, height);
+    draw_dino(&mut stdout, height, game.dino_y);
+
+    // Draw the obstacles
+    for x in 0..width {
+        let obs_height: u16 = game.obstacles[x as usize];
+
+        if obs_height > 0 {
+            draw_obstacle(&mut stdout, x, height, obs_height);
+        }
+    }
+
+    draw_score(game, &mut stdout, width);
+    update_buffer(&mut stdout, height);
+}
+
+fn get_board_size() -> (u16, u16) {
+    let (width, height) = size().unwrap();
 
     if width < MIN_WIDTH || height < MIN_HEIGHT {
         panic!(
@@ -25,67 +46,81 @@ pub fn render(game: &Game) {
         );
     }
 
-    width = min(width, MAX_WIDTH);
-    height = min(height, MIN_HEIGHT);
+    (min(width, MAX_WIDTH), min(height, MIN_HEIGHT))
+}
 
-    stdout.execute(Clear(All)).unwrap();
-
-    // Draw the borders
+fn draw_borders(stdout: &mut io::Stdout, width: u16, height: u16) {
     for x in 0..width {
-        for y in 0..height {
-            if (x == 0 || x == width - 1) || (y == 0 || y == height - 1) {
-                stdout
-                    .queue(MoveTo(x, y))
-                    .unwrap()
-                    .queue(PrintStyledContent("█".green()))
-                    .unwrap();
-            }
-        }
+        stdout
+            .queue(MoveTo(x, 0))
+            .unwrap()
+            .queue(PrintStyledContent("█".green()))
+            .unwrap()
+            .queue(MoveTo(x, height - 1))
+            .unwrap()
+            .queue(PrintStyledContent("█".green()))
+            .unwrap();
     }
+    for y in 0..height {
+        stdout
+            .queue(MoveTo(0, y))
+            .unwrap()
+            .queue(PrintStyledContent("█".green()))
+            .unwrap()
+            .queue(MoveTo(width - 1, y))
+            .unwrap()
+            .queue(PrintStyledContent("█".green()))
+            .unwrap();
+    }
+}
 
-    // Draw the dino (person)
+fn draw_obstacle(stdout: &mut io::Stdout, x: u16, height: u16, obs_height: u16) {
+    for y in 0..obs_height {
+        stdout
+            .queue(MoveTo(x, height - y - 2))
+            .unwrap()
+            .queue(Print("▒"))
+            .unwrap();
+    }
+}
+
+fn draw_dino(stdout: &mut io::Stdout, height: u16, dino_y: u16) {
     stdout
-        .queue(MoveTo(DINO_X, height - game.dino_y - 4))
+        .queue(MoveTo(DINO_X, height - dino_y - 4))
         .unwrap()
         .queue(Print('O'))
         .unwrap()
-        .queue(MoveTo(DINO_X - 1, height - game.dino_y - 3))
+        .queue(MoveTo(DINO_X - 1, height - dino_y - 3))
         .unwrap()
         .queue(Print(r"\|/"))
         .unwrap()
-        .queue(MoveTo(DINO_X - 1, height - game.dino_y - 2))
+        .queue(MoveTo(DINO_X - 1, height - dino_y - 2))
         .unwrap()
         .queue(Print(r"/ \"))
         .unwrap();
+}
 
-    // Draw the obstacles
-    for x in 0..width {
-        let obs_height: u16 = game.obstacles[x as usize];
-
-        if obs_height > 0 {
-            for y in 0..obs_height {
-                stdout
-                    .queue(MoveTo(x, height - y - 2))
-                    .unwrap()
-                    .queue(Print("▒"))
-                    .unwrap();
-            }
-        }
-    }
-
-    // Draw the score
+fn draw_score(game: &Game, stdout: &mut io::Stdout, width: u16) {
     stdout
         .queue(MoveTo(width - 15, 1))
         .unwrap()
         .queue(PrintStyledContent(format!("Score: {}", game.score).cyan()))
         .unwrap();
+}
 
-    // Update
+fn update_buffer(stdout: &mut io::Stdout, height: u16) {
     stdout
-        .queue(MoveTo(width, height - 1))
+        .queue(MoveTo(0, height))
         .unwrap()
         .execute(Hide)
         .unwrap()
         .flush()
         .unwrap();
+}
+
+pub fn reset_cursor() {
+    let mut stdout = io::stdout();
+    let (_, height) = size().unwrap();
+
+    stdout.queue(MoveTo(0, height - 2)).unwrap();
 }

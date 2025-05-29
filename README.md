@@ -14,7 +14,7 @@ The game requires your terminal window to have a minimum height of 10 lines and 
 
 ## Controls
 
-Use `Space`/`w`/`Up` to jump, and `Esc`/`q` to exit.
+Use `Space`/`w`/`Up` to jump, `p` to pause, and `Esc`/`q` to exit.
 
 ## Development
 

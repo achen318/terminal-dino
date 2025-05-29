@@ -1,4 +1,4 @@
-use crate::game::Game;
+use crate::{game::Game, render::reset_cursor};
 
 use crossterm::event::{poll, read, Event::Key, KeyCode};
 use std::{process::exit, time::Duration};
@@ -12,7 +12,13 @@ pub fn handle_input(game: &mut Game) {
                         game.jumping = true;
                     }
                 }
+                KeyCode::Char('p') | KeyCode::Char('P') => {
+                    println!("Game Paused. Press any key to continue.");
+                    read().unwrap();
+                }
                 KeyCode::Esc | KeyCode::Char('q') | KeyCode::Char('Q') => {
+                    println!("Goodbye!");
+                    reset_cursor();
                     exit(0);
                 }
                 _ => {}
