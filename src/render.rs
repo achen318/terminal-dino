@@ -3,7 +3,7 @@ use crate::game::Game;
 use crossterm::{
     cursor::{Hide, MoveTo},
     style::{Print, PrintStyledContent, Stylize},
-    terminal::{size, Clear, ClearType::All},
+    terminal::{disable_raw_mode, size, Clear, ClearType::All},
     ExecutableCommand, QueueableCommand,
 };
 use std::cmp::min;
@@ -123,4 +123,5 @@ pub fn reset_cursor() {
     let (_, height) = size().unwrap();
 
     stdout.queue(MoveTo(0, height - 2)).unwrap();
+    disable_raw_mode().unwrap();
 }

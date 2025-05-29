@@ -2,7 +2,7 @@ mod game;
 mod input;
 mod render;
 
-use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
+use crossterm::terminal::enable_raw_mode;
 use render::reset_cursor;
 use std::{thread, time::Duration};
 
@@ -23,5 +23,4 @@ fn main() {
 
     // Reset cursor
     reset_cursor();
-    disable_raw_mode().unwrap();
 }
