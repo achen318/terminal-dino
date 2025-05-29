@@ -29,13 +29,16 @@ impl Game {
 
     pub fn update(&mut self) -> bool {
         // Shift the obstacles left
-        for i in 1..WIDTH-3 {
+        for i in 1..WIDTH - 3 {
             self.obstacles[i as usize] = self.obstacles[i as usize + 2];
             self.obstacles[i as usize + 2] = 0;
         }
 
         // Randomly generate a new obstacle height
-        if self.obstacles[WIDTH as usize - 20..].iter().all(|&x| x == 0) {
+        if self.obstacles[WIDTH as usize - 20..]
+            .iter()
+            .all(|&x| x == 0)
+        {
             self.obstacles[WIDTH as usize - 2] = random::<u16>() % 3;
         }
 
@@ -54,6 +57,7 @@ impl Game {
 
         // Check for collision
         if self.collision() {
+            println!("Game Over! Score: {}", self.score);
             return false;
         }
 
@@ -61,9 +65,9 @@ impl Game {
     }
 
     fn jump(&mut self) {
-        if self.jump_time >= JUMP_TIME/2 {
+        if self.jump_time >= JUMP_TIME / 2 {
             self.dino_y -= 1;
-        } else{
+        } else {
             self.dino_y += 1;
         }
 
